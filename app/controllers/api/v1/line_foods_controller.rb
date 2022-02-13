@@ -21,6 +21,7 @@ module Api
 
       def create
         # 「早期リターン」例外パターンを検知して、処理の一番最初にリターンで処理を終えるようにします。
+        #other_restaurantはline_foodモデルのscope で定義されている
         if LineFood.active.other_restaurant(@ordered_food.restaurant.id).exists?
           return render json: {
             existing_restaurant: LineFood.other_restaurant(@ordered_food.restaurant.id).first.restaurant.name,
