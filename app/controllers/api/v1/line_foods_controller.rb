@@ -1,7 +1,7 @@
 module Api
   module V1
     class LineFoodsController < ApplicationController
-      before_action :set_food, only: %i[create]
+      before_action :set_food, only: %i[create replace]
 
       def index
         #models/line_food.rbのscope :active→モデル名.スコープ名でactive: trueなLineFoodの一覧が取得できる。
@@ -28,6 +28,23 @@ module Api
           }, status: :not_acceptable
         end
         #例外の場合ここまでで処理が終了
+
+        set_line_food(@ordered_food)
+
+        if @line_food.save
+          render json: {
+            line_food: @line_food
+          }, status: :created
+        else
+          render json: {}, status: :internal_server_error
+        end
+      end
+
+      def replace
+        #mapは最終的に配列を返す。eachはただ繰り返し処理を行うだけで、そのままでは配列は返さない。
+        LineFood.active.other_restaurant(@ordered_food.restaurant.id).each do |line_food|
+          line_food.update_attribute(:active, false)
+        end
 
         set_line_food(@ordered_food)
 
