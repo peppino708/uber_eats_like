@@ -3,6 +3,22 @@ module Api
     class LineFoodsController < ApplicationController
       before_action :set_food, only: %i[create]
 
+      def index
+        #models/line_food.rbのscope :active→モデル名.スコープ名でactive: trueなLineFoodの一覧が取得できる。
+        line_foods = LineFood.active
+        if line_foods.exists?
+          render json: {
+            line_food_ids: line_foods.map { |line_food| line_food.id },
+            restaurant: line_foods[0].restaurant,
+            count: line_foods.sum { |line_food| line_food[:count] },
+            #インスタンスメソッドtotal_amountはline_foodモデルに定義されている
+            amount: line_foods.sum { |line_food| line_food.total_amount },
+          }, status: :ok
+        else
+          render json: {}, status: :no_content
+        end
+      end
+
       def create
         # 「早期リターン」例外パターンを検知して、処理の一番最初にリターンで処理を終えるようにします。
         if LineFood.active.other_restaurant(@ordered_food.restaurant.id).exists?
