@@ -57,7 +57,7 @@ export const Restaurants = () => {
         <MainCover src={MainCoverImage} alt="main cover" />
       </MainCoverImageWrapper>
       {state.restaurantsList.map((restaurant) => (
-        <div>{restaurant.name}</div>
+        <div key={restaurant.id}>{restaurant.name}</div>
       ))}
     </Fragment>
   );
