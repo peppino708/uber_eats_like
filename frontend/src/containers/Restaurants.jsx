@@ -45,7 +45,7 @@ const RestaurantsContentsList = styled.div`
 `;
 
 const RestaurantsContentWrapper = styled.div`
-  width: 450px;
+  width: 400px;
   height: 300px;
   padding: 48px;
 `;
